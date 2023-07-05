@@ -1,0 +1,27 @@
+@charset "utf-8";
+
+@import url('https://fonts.googleapis.com/css?family=DM+Sans');
+
+$brown: #662400;
+$light-brown: #B33F00;
+$orange: #FF6B1A;
+$dark-blue: #006663;
+$light-blue: #00B3AD;
+
+$primary: $orange;
+$link: $dark-blue;
+$secondary: $light-blue;
+
+$family-sans-serif: 'DM Sans';
+
+
+@import "../../node_modules/bulma/bulma.sass";
+// card
+// box
+// timeline
+// button
+// input
+// title/text
+// icon
+// tabs
+// level

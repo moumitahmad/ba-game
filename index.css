@@ -1,0 +1,14 @@
+body {
+    /* overflow: hidden; */
+    margin: 0;
+    /* background-color: "#00B3AD" */
+}
+
+#game-div {
+    /* margin: 10%;
+    background-color: teal; */
+}
+
+.is-primary {
+    color: '#FF6B1A'
+}

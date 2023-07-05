@@ -1,0 +1,3 @@
+DATABASE Password: uh0dcQkEETIRUE4O
+
+ChatGPT key: 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
