@@ -1,0 +1,30 @@
+{
+    "challenge1" : {
+        "id": 0,
+        "title": "Koffer",
+        "description": "test bla bla...",
+        "categoryID": 0,
+        "pos": 438
+    },
+    "challenge2" : {
+        "id": 1,
+        "title": "Auto",
+        "description": "lorem ipsum...",
+        "categoryID": 0,
+        "pos": 445
+    },
+    "challenge3" : {
+        "id": 2,
+        "title": "Wegweiser",
+        "description": "lorem ipsum...",
+        "categoryID": 0,
+        "pos": 453
+    },
+    "challenge4" : {
+        "id": 3,
+        "title": "Flugzeug",
+        "description": "lorem ipsum...",
+        "categoryID": 0,
+        "pos": 460
+    }
+}

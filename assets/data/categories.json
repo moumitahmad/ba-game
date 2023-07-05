@@ -1,0 +1,14 @@
+{
+    "category1": {
+        "id": 0,
+        "name": "Mobility"
+    },
+    "category2": {
+        "id": 1,
+        "name": "Schlafen"
+    },
+    "category3": {
+        "id": 2,
+        "name": "Urlaub"
+    }
+}
