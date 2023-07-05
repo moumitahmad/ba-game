@@ -11,10 +11,11 @@ export class Database {
         supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
     }
 
-    static async getAllSolutions() {
+    static async getSolutionsByChallengeID(challengeID) {
         var { data: solutions, error } = await supabase
             .from('solutions')
             .select('*')
+            .eq('challengeID', challengeID)
             .order('id', { ascending: true }) // TODO: sort by most popular
         
         if(error) {

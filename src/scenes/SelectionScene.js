@@ -18,11 +18,11 @@ class SelectionScene extends BaseScene {
     create(data) {
         super.create()
         this.setupCommonUI()
+        this.physics.add.collider(this.player, this.ground)
 
         this.restartNum = 0
         console.log(data)
         if(!data.count) {
-            this.setupPlayerAnimation()
             this.player.play('blink')
         } else {
             this.restartNum = data.count
@@ -34,13 +34,11 @@ class SelectionScene extends BaseScene {
         this.cloud.body.allowGravity = false
         this.cloud.setImmovable(true)
 
-        console.log(this.restartNum)
         if(this.restartNum == 0) {
             this.placeText(this.categoryText, 226)
             var categoryButton = this.placeImage('button', 449, .08, true)
             categoryButton.body.allowGravity = false
             this.physics.add.overlap(this.player, categoryButton, () => {
-                console.log("Start Mobility")
                 this.scene.restart({ count: 1 })
                 
             })
@@ -63,63 +61,14 @@ class SelectionScene extends BaseScene {
 
         // keyboard setup
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.input.keyboard.removeCapture('SPACE');
         this.walkStarted = false
         this.jumpStarted = false
         this.isLeft = false
     }
 
     update() {
-        this.player.setVelocityX(0)
-
-        if(this.cursors.right.isDown == true) {
-            this.player.body.setVelocityX(360)
-            this.isLeft = false
-            if(!this.walkStarted) {
-                this.player.play('walk-start-right')
-                this.walkStarted = true
-            }
-            this.player.play('walk-right')
-        } else if(this.cursors.left.isDown == true) {
-            this.isLeft = true
-            this.player.body.setVelocityX(-360)
-            if(!this.walkStarted) {
-                this.player.play('walk-start-left')
-                this.walkStarted = true
-            }
-            this.player.play('walk-left')
-        } else if(this.walkStarted) {
-            if(this.isLeft) {
-                this.player.play('walk-end-left')
-            } else {
-                this.player.play('walk-end-right')
-            }
-            this.walkStarted = false
-        } else if(this.cursors.up.isDown) {
-            if(this.isLeft) {
-                this.player.play('jump-left')
-            } else {
-                this.player.play('jump')
-            }
-            if(this.player.body.blocked.down) {
-                this.player.body.setVelocityY(-360);
-                if(!this.jumpStarted) {
-                    if(this.isLeft) {
-                        this.player.play('walk-start-left')
-                    } else {
-                        this.player.play('jump-start')
-                    }
-                    this.jumpStarted = true
-                }
-            }
-            
-        } else if(this.jumpStarted) {
-            if(this.isLeft) {
-                this.player.play('walk-end-left')
-            } else {
-                this.player.play('jump-end')
-            }
-            this.jumpStarted = false
-        }
+        this.checkPlayer()    
     }
 }
 

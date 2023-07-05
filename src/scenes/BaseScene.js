@@ -26,9 +26,6 @@ export class BaseScene extends Phaser.Scene {
         this.ground = this.placeImage('ground_new', 759, 1, true)
         this.ground.body.allowGravity = false
         this.ground.setImmovable(true)
-
-        // collisions
-        this.physics.add.collider(this.player, this.ground)
     }
     //
     //set a background image
@@ -94,77 +91,59 @@ export class BaseScene extends Phaser.Scene {
     }
     update() {}
 
-    setupPlayerAnimation() {
-        this.anims.create({
-            key: 'walk-start-right',
-            frames: this.anims.generateFrameNumbers('player', { start: 12, end: 12 }),
-            frameRate: 4,
-            repeat: 0
-        });
-        this.anims.create({
-            key: 'walk-right',
-            frames: this.anims.generateFrameNumbers('player', { start: 13, end: 13 }),
-            frameRate: 4,
-            repeat: 0
-        });
-        this.anims.create({
-            key: 'walk-end-right',
-            frames: this.anims.generateFrameNumbers('player', { start: 14, end: 14 }),
-            frameRate: 2,
-            repeat: 0
-        });
-        this.anims.create({
-            key: 'walk-start-left',
-            frames: this.anims.generateFrameNumbers('player', { start: 15, end: 15 }),
-            frameRate: 4,
-            repeat: 0
-        });
-        this.anims.create({
-            key: 'walk-left',
-            frames: this.anims.generateFrameNumbers('player', { start: 16, end: 16 }),
-            frameRate: 4,
-            repeat: 0
-        });
-        this.anims.create({
-            key: 'walk-end-left',
-            frames: this.anims.generateFrameNumbers('player', { start: 15, end: 15 }),
-            frameRate: 2,
-            repeat: 0
-        });
+    checkPlayer() {
+        this.player.setVelocityX(0)
 
-        this.anims.create({
-            key: 'blink',
-            frames: this.anims.generateFrameNumbers('player', { start: 4, end: 5 }),
-            frameRate: 1,
-            repeat: -1
-        });
+        if(this.cursors.right.isDown == true) {
+            this.player.body.setVelocityX(360)
+            this.isLeft = false
+            if(!this.walkStarted) {
+                this.player.play('walk-start-right')
+                this.walkStarted = true
+            }
+            this.player.play('walk-right')
+        } else if(this.cursors.left.isDown == true) {
+            this.isLeft = true
+            this.player.body.setVelocityX(-360)
+            if(!this.walkStarted) {
+                this.player.play('walk-start-left')
+                this.walkStarted = true
+            }
+            this.player.play('walk-left')
+        } else if(this.walkStarted) {
+            if(this.isLeft) {
+                this.player.play('walk-end-left')
+            } else {
+                this.player.play('walk-end-right')
+            }
+            this.walkStarted = false
+        } else if(this.cursors.up.isDown) {
+            if(this.isLeft) {
+                this.player.play('jump-left')
+            } else {
+                this.player.play('jump')
+            }
+            if(this.player.body.blocked.down) {
+                this.player.body.setVelocityY(-360);
+                if(!this.jumpStarted) {
+                    if(this.isLeft) {
+                        this.player.play('walk-start-left')
+                    } else {
+                        this.player.play('jump-start')
+                    }
+                    this.jumpStarted = true
+                }
+            }
+            
+        } else if(this.jumpStarted) {
+            if(this.isLeft) {
+                this.player.play('walk-end-left')
+            } else {
+                this.player.play('jump-end')
+            }
+            this.jumpStarted = false
+        }
 
-        this.anims.create({
-            key: 'jump-start',
-            frames: this.anims.generateFrameNumbers('player', { start: 0, end: 0 }),
-            frameRate: 10,
-            repeat: 0
-        });
-
-        this.anims.create({
-            key: 'jump',
-            frames: this.anims.generateFrameNumbers('player', { start: 1, end: 1 }),
-            frameRate: 10,
-            repeat: 0
-        });
-
-        this.anims.create({
-            key: 'jump-end',
-            frames: this.anims.generateFrameNumbers('player', { start: 2, end: 2 }),
-            frameRate: 10,
-            repeat: 0
-        });
-
-        this.anims.create({
-            key: 'jump-left',
-            frames: this.anims.generateFrameNumbers('player', { start: 3, end: 3 }),
-            frameRate: 10,
-            repeat: 0
-        });
     }
+
 }

@@ -1,18 +1,27 @@
-<div class="box commentCard" style="max-height: 350px; overflow: scroll;">
-    <!-- <div class="buttons" id="buttons" style="margin-top: .5rem; justify-content: center;">
-        <button class="button is-primary" name="addButton">Der Idee etwas hinzufügen</button>
-    </div> -->
-    <div class="timeline">
-        <div class="timeline-item" id="newCommentInput">
-            <div class="timeline-marker"></div>
-            <div class="timeline-content">
-                <p class="heading" id="addTitle">neuer Kommentar</p>
-                <div class="field">
-                    <textarea class="textarea" placeholder="Der Idee etwas hinzufügen?" id="commentInput" style="min-height: 4em;" ></textarea>
+
+
+<div class="modal-background" name="background" style="width: 100vw; height: 100vh; display: block ruby; background-color: rgba(10, 10, 10, 0.3); position: fixed;">
+    <div class="box commentCard" style="max-height: 460px; overflow: scroll; margin: 5%; width: 900px;">
+        <p id="completeSolution" style="padding-bottom: 3%;">Beschreibung bla bla</p>
+        <div class="timeline">
+            <div class="timeline-item" id="newCommentInput">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <p class="heading" id="addTitle">neuer Kommentar</p>
+                    <div class="columns is-vcentered">
+                        <div class="column">
+                            <div class="field">
+                                <textarea class="textarea" placeholder="Der Idee etwas hinzufügen?" id="commentInput" style="width: 500px; min-height: 5em;" ></textarea>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <button class="button is-primary" name="saveButton">Speichern</button>
+                        </div>
+                    </div>
+                    
                 </div>
-                <button class="button is-primary" name="saveButton">Speichern</button>
             </div>
+            <div id="itemContainer"></div>
         </div>
-        <div id="itemContainer"></div>
     </div>
 </div>

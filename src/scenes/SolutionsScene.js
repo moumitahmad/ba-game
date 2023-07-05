@@ -1,3 +1,4 @@
+import { Align } from '../common/util/align'
 import { Database } from '../data/database'
 import { BaseScene } from './BaseScene'
 
@@ -13,13 +14,17 @@ class SolutionsScene extends BaseScene {
         this.load.html('commentSection', './assets/components/commentSection.html')
     }
 
-    create() {
+    create(data) {
         super.create()
         this.setupCommonUI()
-        this.setupPlayerAnimation()
+        this.activeButtonID = -1
+        this.physics.add.collider(this.player, this.ground, () => {
+            this.activeButtonID = -1
+        })
 
         // db
-        Database.getAllSolutions().then(
+        Database.getSolutionsByChallengeID(data.challengeID)
+        .then(
             (solutions) => {
                 console.log(solutions)
                 this.setupUI(solutions)
@@ -28,6 +33,7 @@ class SolutionsScene extends BaseScene {
 
         // keyboard setup
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.input.keyboard.removeCapture('SPACE');
     }
 
     setupUI(solutions) {
@@ -41,7 +47,7 @@ class SolutionsScene extends BaseScene {
             }
         })
 
-        this.positions = [504, 511, 518]
+        this.positions = [442, 449, 456]
         this.cards = [
             this.add.dom(0, 0).createFromCache('solutionDisplay'),
             this.add.dom(0, 0).createFromCache('solutionDisplay'),
@@ -52,9 +58,8 @@ class SolutionsScene extends BaseScene {
         }
         var collisionObject
         var collisions = []
-        this.activeButtonID = -1
         for(var pos in this.positions) {
-            collisionObject = this.placeImage('button', this.positions[pos], .05, true)
+            collisionObject = this.placeImage('collisionItem', this.positions[pos], .13, true)
             collisionObject.body.allowGravity = false
             collisionObject.setData({ solution: {}, pos: this.positions[pos] })
             this.physics.add.overlap(collisionObject, this.player, (button) => {
@@ -64,7 +69,9 @@ class SolutionsScene extends BaseScene {
                     Database.getCommentsBySolutionID(solution.id).then(
                         (comments) => {
                             var commentSection = this.add.dom(0, 0).createFromCache('commentSection')
-                            this.aGrid.placeAtIndex(button.getData('pos')-31*11, commentSection)
+                            commentSection.getChildByID('completeSolution').innerHTML = solution.description
+                            //Align.center(commentSection, this)
+                            //this.aGrid.placeAtIndex(button.getData('pos')-31*11, commentSection)
                             this.commentLenght = 1
                             comments.forEach((comment) => {
                                 this.displayComment(comment, this.commentLenght, commentSection)
@@ -93,6 +100,8 @@ class SolutionsScene extends BaseScene {
                                     } else {
                                         //commentInput.style.border = 'red'
                                     }
+                                } else if(event.target.classList.item(0) === 'modal-background') {
+                                    commentSection.setVisible(false)
                                 }
                             })
                         }
@@ -111,12 +120,12 @@ class SolutionsScene extends BaseScene {
             // add gallery buttons
             this.previewButton = this.add.dom(0, 0).createFromCache('iconButton')
             this.previewButton.getChildByID('icon').classList.add("fa-caret-left")
-            this.aGrid.placeAtIndex(498, this.previewButton)
+            this.aGrid.placeAtIndex(436, this.previewButton)
             this.previewButton.setVisible(false)
             
             this.nextButton = this.add.dom(0, 0).createFromCache('iconButton')
             this.nextButton.getChildByID('icon').classList.add("fa-caret-right")
-            this.aGrid.placeAtIndex(524, this.nextButton)
+            this.aGrid.placeAtIndex(462, this.nextButton)
 
             // button events
             this.nextButton.addListener('click')
@@ -158,7 +167,7 @@ class SolutionsScene extends BaseScene {
             card.setVisible(false)
         })
         for(var co in collisionObjects) {
-            collisionObjects.at(co).setVisible(false)
+            //collisionObjects.at(co).setVisible(false)
             collisionObjects.at(co).setData({ solution: {} })
             this.aGrid.placeAtIndex(collisionObjects.at(co).getData('pos'), collisionObjects.at(co))
         }
@@ -167,7 +176,6 @@ class SolutionsScene extends BaseScene {
         let i = 0
         displayedSolutions.forEach((solution) => {
             // update card
-            cards[i].getChildByID('solutionTitle').innerText = solution.title
             cards[i].getChildByID('solutionDescription').innerText = solution.description
             cards[i].getChildByID('likeAmount').innerText = solution.likes
 
@@ -223,57 +231,7 @@ class SolutionsScene extends BaseScene {
     }
 
     update() {
-        this.player.setVelocityX(0)
-
-        if(this.cursors.right.isDown == true) {
-            this.player.body.setVelocityX(360)
-            this.isLeft = false
-            if(!this.walkStarted) {
-                this.player.play('walk-start-right')
-                this.walkStarted = true
-            }
-            this.player.play('walk-right')
-        } else if(this.cursors.left.isDown == true) {
-            this.isLeft = true
-            this.player.body.setVelocityX(-360)
-            if(!this.walkStarted) {
-                this.player.play('walk-start-left')
-                this.walkStarted = true
-            }
-            this.player.play('walk-left')
-        } else if(this.walkStarted) {
-            if(this.isLeft) {
-                this.player.play('walk-end-left')
-            } else {
-                this.player.play('walk-end-right')
-            }
-            this.walkStarted = false
-        } else if(this.cursors.up.isDown) {
-            if(this.isLeft) {
-                this.player.play('jump-left')
-            } else {
-                this.player.play('jump')
-            }
-            if(this.player.body.blocked.down) {
-                this.player.body.setVelocityY(-360);
-                if(!this.jumpStarted) {
-                    if(this.isLeft) {
-                        this.player.play('walk-start-left')
-                    } else {
-                        this.player.play('jump-start')
-                    }
-                    this.jumpStarted = true
-                }
-            }
-            
-        } else if(this.jumpStarted) {
-            if(this.isLeft) {
-                this.player.play('walk-end-left')
-            } else {
-                this.player.play('jump-end')
-            }
-            this.jumpStarted = false
-        }
+        this.checkPlayer()
     }
 }
 

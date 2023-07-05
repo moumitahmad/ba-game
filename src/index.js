@@ -24,7 +24,7 @@ const config = {
         },
         zoom: 1
     },
-    backgroundColor: "#65BBE6",
+    backgroundColor: '#E1FFFD', //"#65BBE6",
     physics: {
         default: 'arcade',
         arcade: {
