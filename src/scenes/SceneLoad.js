@@ -104,9 +104,9 @@ export default class SceneLoad extends BaseScene {
         this.setupPlayerAnimation()
         //var challengeData = this.cache.json.get('challengeData')
         //this.scene.start("ChallengeScene", { challenge: challengeData["challenge1"] });
-        //this.scene.start("SelectionScene");
+        this.scene.start("SelectionScene");
         
-        this.scene.start("SolutionsScene", { challengeID:  0});
+        //this.scene.start("SolutionsScene", { challengeID:  0});
     }
 
     setupPlayerAnimation() {

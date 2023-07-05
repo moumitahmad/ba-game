@@ -21,6 +21,9 @@ class SolutionsScene extends BaseScene {
         this.physics.add.collider(this.player, this.ground, () => {
             this.activeButtonID = -1
         })
+        var welcomeText = "Stöbere doch gerne in der Sammlung von Lösungen, sie können kommentiert und bewertet werden."
+        var title = this.placeText(welcomeText, 125)
+        title.setScale(.8)
 
         // db
         Database.getSolutionsByChallengeID(data.challengeID)
@@ -162,7 +165,7 @@ class SolutionsScene extends BaseScene {
 
     setupSolutionCards(displayedSolutions, cards, collisionObjects) {
         
-        // reset display
+        // TODO: reset display
         cards.forEach((card) => {
             card.setVisible(false)
         })
@@ -178,6 +181,7 @@ class SolutionsScene extends BaseScene {
             // update card
             cards[i].getChildByID('solutionDescription').innerText = solution.description
             cards[i].getChildByID('likeAmount').innerText = solution.likes
+            solution.liked = false
 
             cards[i].setVisible(true)
 
@@ -188,11 +192,27 @@ class SolutionsScene extends BaseScene {
             cards[i].addListener('click')
             cards[i].on('click', (event) => {
                 if(event.target.classList.item(0) === "likeButton") {
-                    Database.likeSolution(solution).then(
-                        (s) => {
-                            document.getElementById('likeAmount').innerText = s.likes
-                        }
-                    )
+                    if(!solution.liked) {
+                        Database.likeSolution(solution).then(
+                            (s) => {
+                                console.log(event.target.parentElement.parentElement.parentElement)
+                                event.target.parentElement.parentElement.parentElement.children.item(1).innerText = s.likes
+                                event.target.classList.remove("fa-regular")
+                                event.target.classList.add("fa-solid")
+                                solution.liked = true
+                            }
+                        )
+                    } else {
+                        Database.unlikeSolution(solution).then(
+                            (s) => {
+                                console.log(event.target.parentElement.parentElement.parentElement)
+                                event.target.parentElement.parentElement.parentElement.children.item(1).innerText = s.likes
+                                event.target.classList.add("fa-regular")
+                                event.target.classList.remove("fa-solid")
+                                solution.liked = false
+                            }
+                        )
+                    }
                 }
             })
 

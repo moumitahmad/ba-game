@@ -38,13 +38,24 @@ export class Database {
     }
 
     static async likeSolution(solution) {
+        console.log(solution.likes)
         const { data, error } = await supabase
             .from('solutions')
-            .update({ likes: solution.likes+1 })
+            .update({ likes: ++solution.likes })
             .eq('id', solution.id)
             .select()
 
-        console.log(data)
+        return data[0]
+    }
+
+    static async unlikeSolution(solution) {
+        console.log(solution.likes)
+        const { data, error } = await supabase
+            .from('solutions')
+            .update({ likes: --solution.likes })
+            .eq('id', solution.id)
+            .select()
+
         return data[0]
     }
 

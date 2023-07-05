@@ -21,6 +21,9 @@ class ChallengeScene extends BaseScene {
     create() {
         super.create()
         this.setupCommonUI()
+        var welcomeText = "Wie würden Sie dieses Problem lösen?"
+        var title = this.placeText(welcomeText, 127)
+        title.setScale(.8)
 
         var restartButton = this.add.dom(0, 0).createFromCache('iconButton')
         restartButton.getChildByID('icon').classList.add("fa-caret-left")
@@ -36,7 +39,7 @@ class ChallengeScene extends BaseScene {
         this.timerText = this.placeText("0:00", 60)
         this.timerText.setScale(2)
         this.timedEvent = this.time.addEvent({
-            delay: 30000, // 180000, // TODO: Change time
+            delay: 180000, //  30000, // TODO: Change time
             callback: this.timerOut, 
             callbackScope: this
         }) 
