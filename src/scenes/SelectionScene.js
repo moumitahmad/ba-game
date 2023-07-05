@@ -27,7 +27,7 @@ class SelectionScene extends BaseScene {
         } else {
             this.restartNum = data.count
         }
-        this.challengeText = "Wähle eine Herrauforderung:"
+        this.challengeText = "Wähle eine Herauforderung:"
         this.categoryText = "Wähle eine Kategorie:"
 
         this.cloud = this.placeImage('cloud', 150, 0.2, true)
