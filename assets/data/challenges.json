@@ -9,19 +9,19 @@
     },
     "challenge2" : {
         "id": 1,
-        "title": "Anträge stellen",
-        "description": "Ich könnte mehr Unterstützung bei der Pflege meines Kindes gebrauchen. Wo kann ich finanzielle oder pflegende Unterstützung beantragen?",
-        "categoryID": 0,
-        "pos": 445,
-        "image": "applications"
-    },
-    "challenge3" : {
-        "id": 2, 
         "title": "Transport in und aus dem Rollstuhl",
         "description": "Mein Kind sitzt im Rollstuhl und ist inzwischen für mich etwas schwer geworden. Habt ihr Tricks um es leichter rein und aus dem Rollstuhl heben?",
         "categoryID": 0,
-        "pos": 453,
+        "pos": 445,
         "image": "wheelchair"
+    },
+    "challenge3" : {
+        "id": 2, 
+        "title": "Anträge stellen",
+        "description": "Ich könnte mehr Unterstützung bei der Pflege meines Kindes gebrauchen. Wo kann ich finanzielle oder pflegende Unterstützung beantragen?",
+        "categoryID": 0,
+        "pos": 453,
+        "image": "applications"
     },
     "challenge4" : {
         "id": 3,
