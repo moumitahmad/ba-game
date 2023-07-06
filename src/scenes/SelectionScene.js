@@ -49,7 +49,7 @@ class SelectionScene extends BaseScene {
             var button
             for(var choice in challengeData) {
                 // this.placeText(challengeData[choice].title, challengeData[choice].pos-31*2)
-                button = this.placeImage('button', challengeData[choice].pos, .08, true)
+                button = this.placeImage(challengeData[choice].image, challengeData[choice].pos, .08, true)
                 button.body.allowGravity = false
                 button.setData({ challenge: challengeData[choice] })
                 this.physics.add.collider(button, this.player, (button) => {

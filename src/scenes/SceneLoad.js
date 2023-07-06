@@ -49,7 +49,7 @@ export default class SceneLoad extends BaseScene {
         //
         //game png
         //
-        let pngArray = ['star','base-tiles', 'ground', 'ground_new', 'button', 'cloud', 'collisionItem'];
+        let pngArray = ['base-tiles', 'ground_new', 'button', 'cloud', 'collisionItem', 'diaper', 'wheelchair', 'vacation', 'applications'];
         for (let i = 0; i < pngArray.length; i++) {
             this.loadPng(pngArray[i], this.imagePath);
         }

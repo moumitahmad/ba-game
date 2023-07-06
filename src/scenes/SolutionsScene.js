@@ -21,9 +21,6 @@ class SolutionsScene extends BaseScene {
         this.physics.add.collider(this.player, this.ground, () => {
             this.activeButtonID = -1
         })
-        var welcomeText = "Stöbere doch gerne in der Sammlung von Lösungen, sie können kommentiert und bewertet werden."
-        var title = this.placeText(welcomeText, 125)
-        title.setScale(.8)
 
         // db
         Database.getSolutionsByChallengeID(data.challengeID)
@@ -41,7 +38,7 @@ class SolutionsScene extends BaseScene {
 
     setupUI(solutions) {
         var restartButton = this.add.dom(0, 0).createFromCache('iconButton')
-        restartButton.getChildByID('icon').classList.add("fa-caret-left")
+        restartButton.getChildByID('icon').classList.add("fa-house")
         this.aGrid.placeAtIndex(32, restartButton)
         restartButton.addListener('click')
         restartButton.on('click', (event) => {
@@ -49,6 +46,18 @@ class SolutionsScene extends BaseScene {
                 this.scene.start("SelectionScene")
             }
         })
+
+        var noSolutionsText = "Bisher hat leider noch niemand einen Lösungsvorschlag gemacht."
+        var welcomeText = "Stöbere doch gerne in der Sammlung von Lösungsvorschläge, sie können kommentiert und bewertet werden."
+        var title 
+        if(solutions.length === 0) {
+            title = this.placeText(noSolutionsText, 125)
+            title.setScale(.8)
+            return
+        } else {
+            title = this.placeText(welcomeText, 125)
+            title.setScale(.8)
+        }
 
         this.positions = [442, 449, 456]
         this.cards = [

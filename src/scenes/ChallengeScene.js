@@ -26,7 +26,7 @@ class ChallengeScene extends BaseScene {
         title.setScale(.8)
 
         var restartButton = this.add.dom(0, 0).createFromCache('iconButton')
-        restartButton.getChildByID('icon').classList.add("fa-caret-left")
+        restartButton.getChildByID('icon').classList.add("fa-house")
         this.aGrid.placeAtIndex(32, restartButton)
         restartButton.addListener('click')
         restartButton.on('click', (event) => {
@@ -47,8 +47,8 @@ class ChallengeScene extends BaseScene {
 
         // DIALOG MODAL
         this.dialogModal = this.add.dom(0, 0).createFromCache('dialogModal')
-        this.dialogModal.getChildByID("messageContent").textContent = this.currentChallenge.title + ": " + this.currentChallenge.description
-        Align.center(this.dialogModal, this)
+        this.dialogModal.getChildByID("messageContent").textContent = this.currentChallenge.description
+        this.aGrid.placeAtIndex(383, this.dialogModal)
 
         // INPUT FORM
         this.inputForm = this.add.dom(0, 0).createFromCache('inputForm')
@@ -207,7 +207,7 @@ class ChallengeScene extends BaseScene {
             this.dialogModal.getChildByID('messageContent').textContent = newMessage
             this.dialogModal.getChildByID('confirmationButton').innerHTML = "Start"
             document.getElementById('cancelButton').style.display = 'none'
-            this.aGrid.placeAtIndex(355, this.dialogModal)
+            this.aGrid.placeAtIndex(352, this.dialogModal)
             this.count = 1
             this.rightButtonActive = false
             this.leftButtonActive = true
@@ -244,7 +244,7 @@ class ChallengeScene extends BaseScene {
             this.dialogModal.getChildByID('messageContent').textContent = newMessage
             this.dialogModal.getChildByID('confirmationButton').innerHTML = "Ja, gerne!"
             this.dialogModal.getChildByID('cancelButton').innerHTML = "Nein, zurück"
-            this.aGrid.placeAtIndex(386, this.dialogModal)
+            this.aGrid.placeAtIndex(383, this.dialogModal)
             this.count = 2
         } else if(this.count == 2) {
             console.log('count 2')

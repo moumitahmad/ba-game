@@ -1,30 +1,34 @@
 {
     "challenge1" : {
         "id": 0,
-        "title": "Koffer",
-        "description": "test bla bla...",
+        "title": "Windel",
+        "description": "Die Windel meines Kindes läuft schnell aus. Was kann ich tun, damit die Unterlage nicht naß wird oder ich es schneller bemerke?",
         "categoryID": 0,
-        "pos": 438
+        "pos": 438,
+        "image": "diaper"
     },
     "challenge2" : {
         "id": 1,
-        "title": "Auto",
-        "description": "lorem ipsum...",
+        "title": "Transport in und aus dem Rollstuhl",
+        "description": "Mein Kind sitzt im Rollstuhl und ist inzwischen für mich etwas schwer geworden. Habt ihr Tricks um es leichter rein und aus dem Rollstuhl heben?",
         "categoryID": 0,
-        "pos": 445
+        "pos": 445,
+        "image": "wheelchair"
     },
     "challenge3" : {
-        "id": 2,
-        "title": "Wegweiser",
-        "description": "lorem ipsum...",
+        "id": 2, 
+        "title": "Anträge stellen",
+        "description": "Ich könnte mehr Unterstützung bei der Pflege meines Kindes gebrauchen. Wo kann ich finanzielle oder pflegende Unterstützung beantragen?",
         "categoryID": 0,
-        "pos": 453
+        "pos": 453,
+        "image": "applications"
     },
     "challenge4" : {
         "id": 3,
-        "title": "Flugzeug",
-        "description": "lorem ipsum...",
-        "categoryID": 0,
-        "pos": 460
+        "title": "Urlaubsplanung",
+        "description": "Welche Dinge sind für euch im Urlaub unverzichtbar?",
+       "categoryID": 0,
+        "pos": 460,
+        "image": "vacation"
     }
 }
