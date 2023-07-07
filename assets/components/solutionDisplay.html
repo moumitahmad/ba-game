@@ -1,15 +1,28 @@
-<div class="card solution-display">
-    <div class="card-content" style="width: 200px;">
-      <div class="content" id="solutionDescription" style="display: -webkit-box; overflow: hidden; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
-        Beschreibung bla bla
+
+<div>
+    <div class="card solution-display">
+      <div class="card-content" style="width: 200px; height: 120px;">
+          <div class="content" id="solutionDescription" style="display: -webkit-box; overflow: hidden; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
+              Beschreibung bla bla
+          </div>
       </div>
-      <nav class="level is-mobile">
-        <div class="level-left">
-          <a class="level-item">
-            <span class="likeButton icon is-small has-text-link"><i class="likeButton fa-heart fa-regular" id="likeIcon"></i></span>
-          </a>
-          <p id="likeAmount">0</p>
-        </div>
-      </nav>
     </div>
+    <div class="buttons" style="justify-content: center; padding: 5%;">
+        <a class="button is-primary" name="commentButton" style="margin-right: 20%;">
+            <span class="icon is-small">
+                <i class="fa-solid fa-comment"></i>
+            </span>
+            <span id="commentAmount">
+                0
+            </span>
+        </a>
+        <a class="button is-link" name="confirmationButton" id="likeButton">
+              <span class="icon is-small">
+                  <i class="fa-heart fa-regular" id="likeIcon"></i>
+              </span>
+              <span id="likeAmount">
+                  0
+              </span>
+        </a>
   </div>
+</div>
