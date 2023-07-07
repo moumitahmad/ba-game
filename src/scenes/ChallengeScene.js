@@ -21,7 +21,7 @@ class ChallengeScene extends BaseScene {
     create() {
         super.create()
         this.setupCommonUI()
-        var welcomeText = "Wie würden Sie dieses Problem lösen?"
+        var welcomeText = "Wie würden Sie diese Herausforderung lösen?"
         var title = this.placeText(welcomeText, 127)
         title.setScale(.8)
 
@@ -48,7 +48,7 @@ class ChallengeScene extends BaseScene {
         // DIALOG MODAL
         this.dialogModal = this.add.dom(0, 0).createFromCache('dialogModal')
         this.dialogModal.getChildByID("messageContent").textContent = this.currentChallenge.description
-        this.aGrid.placeAtIndex(383, this.dialogModal)
+        this.aGrid.placeAtIndex(384, this.dialogModal)
 
         // INPUT FORM
         this.inputForm = this.add.dom(0, 0).createFromCache('inputForm')
@@ -69,7 +69,7 @@ class ChallengeScene extends BaseScene {
 
         // player - CLICK
         this.buttonsCollidable = true
-        this.collisionLeft = this.placeImage('collisionItem', 384, .15, true)
+        this.collisionLeft = this.placeImage('collisionItem', 447, .14, true)
         this.leftButtonActive = true
         this.collisionLeft.body.allowGravity = false
         this.physics.add.overlap(this.collisionLeft, this.player, () => {
@@ -78,7 +78,7 @@ class ChallengeScene extends BaseScene {
                 this.confirmationButtonClicked()
             }
         })
-        this.collisionRight = this.placeImage('collisionItem', 390, .15, true)
+        this.collisionRight = this.placeImage('collisionItem', 452, .1, true)
         this.collisionRight.body.allowGravity = false
         this.rightButtonActive = true
         this.physics.add.overlap(this.collisionRight, this.player, () => {
@@ -94,41 +94,7 @@ class ChallengeScene extends BaseScene {
         this.inputForm.addListener('click')
         this.inputForm.on('click', (event) => {
             if(event.target.name === 'moreButton') {
-                var inputSolution = this.inputForm.getChildByName('solutionInput')                
-                if (inputSolution.value !== "") {
-                    // save solution
-                    this.saveSolutionInLocalArray(this.activeTabKey, inputSolution.value)
-                    // reset input
-                    inputSolution.value = ""
-
-                    
-                    // create new tab
-                    // update activ tab key
-                    this.activeTabKey = this.solutions.length
-                    var newInnerTab = document.createElement('a')
-                    newInnerTab.innerText = "Lösungsvorschlag " + (this.activeTabKey + 1)
-                    newInnerTab.setAttribute("name", "tabButton")
-                    newInnerTab.setAttribute("key", this.activeTabKey)
-                    var newTab = document.createElement('li')
-
-                    // switch to new tab
-                    this.resetActiveClass()
-                    newTab.appendChild(newInnerTab)
-                    newTab.classList.add("is-active")
-                    document.getElementById('tab-container').appendChild(newTab)
-
-                    // disable more button
-                    if(this.activeTabKey == 4) {
-                        document.getElementById('moreButton').disabled = true
-                    }
-                    
-                    // remove error
-                    this.error.style.display = 'none'
-                } else {
-                    // show error
-                    this.error.style.display = 'block'
-                }
-
+                this.newSolution()
             } else if(event.target.name === 'tabButton') {
                 const inputSolution = this.inputForm.getChildByName('solutionInput')
                 if (inputSolution.value !== '') {
@@ -154,36 +120,11 @@ class ChallengeScene extends BaseScene {
                         this.error.style.display = 'block'
                 }
             } else if(event.target.name === 'doneButton') {
-                const inputSolution = this.inputForm.getChildByName('solutionInput')
-                if (inputSolution.value !== '') {
-                    // remove error
-                    this.error.style.display = 'none'
-
-                    // save solution
-                    var activeTabKeyValue = document.getElementsByClassName('is-active').item(0).firstChild.attributes.key.value
-                    this.saveSolutionInLocalArray(activeTabKeyValue, inputSolution.value)
-                    console.log(this.solutions)
-                    
-                    this.inputForm.removeListener('click')
-                    this.inputForm.setVisible(false)
-                    
-                    this.timedEvent.paused = true
-
-                    // save in database
-                    Database.saveNewSolutions(this.solutions).then(
-                        () => {
-                            console.log(this.solutions + " erfolgreich gespeichert.")
-                            // switch to solution scene
-                            this.scene.start("SolutionsScene", { challengeID: this.currentChallenge.id })
-                        }
-                    )
-
-                    
-                } else {
-                    // show error
-                    this.error.style.display = 'block'
-                }
-            } 
+                this.solutionsDone()
+            } else if(event.target.classList.item(0) === 'removeButton') {
+                console.log("close")
+                // TODO: add function
+            }
         })
         
         // collisions
@@ -199,56 +140,151 @@ class ChallengeScene extends BaseScene {
         this.isLeft = false
     }
 
-    confirmationButtonClicked() { // TODO: change to switch case, remove console.log
-        console.log('confirmation')
-        if(this.count == 0) {
-            var newMessage = "Häufig kann man unter Zeitdruck besser Lösungen finden. \n Sie haben nun drei Minuten, um möglichst viele Lösungen zu finden. Die Qualität der Lösungen ist dabei zweitrangig. \n Später können Sie gerne noch Fotos oder Skizzen einfügen. \n Fröhliches Sammeln!"
-            this.dialogModal.getChildByID('messageTitle').textContent = "Was passiert nun?"
-            this.dialogModal.getChildByID('messageContent').textContent = newMessage
-            this.dialogModal.getChildByID('confirmationButton').innerHTML = "Start"
-            document.getElementById('cancelButton').style.display = 'none'
-            this.aGrid.placeAtIndex(352, this.dialogModal)
-            this.count = 1
-            this.rightButtonActive = false
-            this.leftButtonActive = true
-            this.aGrid.placeAtIndex(449, this.collisionLeft)
-        } else if(this.count == 1) {
-            console.log('count 1')
-            this.dialogModal.setVisible(false)
-            // open inputForms
-            this.inputForm.setVisible(true)
-            // start timer
-            this.timedEvent.paused = false
-            // reset
-            this.dialogModal.removeAllListeners()
-            this.leftButtonActive = false
-            this.rightButtonActive = false
-        } else if(this.count == 2) {
-            this.scene.start("SolutionsScene", { challengeID: this.currentChallenge.id })
-        } else if(this.count == 3) {
-            this.dialogModal.setVisible(false)
-            this.dialogModal.removeAllListeners()
+    confirmationButtonClicked() {
+        switch(this.count) {
+            case 0:
+                var newMessage = "Häufig kann man unter Zeitdruck besser Lösungen finden. \n Sie haben nun drei Minuten, um möglichst viele Lösungen zu finden. Die Qualität der Lösungen ist dabei zweitrangig. \n Später können Sie gerne noch Fotos oder Skizzen einfügen. \n Fröhliches Sammeln!"
+                this.dialogModal.getChildByID('messageTitle').textContent = "Was passiert nun?"
+                this.dialogModal.getChildByID('messageTitle').style.display = 'block'
+                this.dialogModal.getChildByID('messageContent').textContent = newMessage
+                this.dialogModal.getChildByID('confirmationButton').innerHTML = "Start"
+                document.getElementById('cancelButton').style.display = 'none'
+                this.aGrid.placeAtIndex(353, this.dialogModal)
+                this.count = 1
+                this.rightButtonActive = false
+                this.leftButtonActive = true
+                this.aGrid.placeAtIndex(511, this.collisionLeft)
+                this.collisionLeft.setScale(0.3)
+                break
+            case 1:
+                this.dialogModal.setVisible(false)
+                // open inputForms
+                this.inputForm.setVisible(true)
+                // start timer
+                this.timedEvent.paused = false
+                // reset
+                this.dialogModal.removeAllListeners()
+                this.leftButtonActive = true
+                this.rightButtonActive = true
+                this.aGrid.placeAtIndex(545, this.collisionLeft)
+                this.collisionLeft.setScale(0.3)
+                this.collisionRight.setVisible(true)
+                this.aGrid.placeAtIndex(540, this.collisionRight)
+                this.collisionRight.setScale(0.5)
+                this.count = 4
+                break
+            case 2:
+                this.scene.start("SolutionsScene", { challengeID: this.currentChallenge.id })
+            case 3:
+                this.dialogModal.setVisible(false)
+                this.dialogModal.removeAllListeners()
 
-            // lock input form
-            document.getElementById('moreButton').disabled = true
-            this.inputForm.setVisible(true)
+                // lock input form
+                document.getElementById('moreButton').disabled = true
+                this.inputForm.setVisible(true)
+                break
+            case 4:
+                this.solutionsDone()
+                break
+            default:
+                console.log("something unexpected happend")
         }
     }
 
     cancleButtonClicked() {
-        console.log('cancle')
-        if(this.count == 0) {
-            console.log('count 0')
-            var newMessage = "Schade, wollen Sie sich die Lösungen anderer Teilnehmer ansehen?"
-            this.dialogModal.getChildByID('messageTitle').textContent = ""
-            this.dialogModal.getChildByID('messageContent').textContent = newMessage
-            this.dialogModal.getChildByID('confirmationButton').innerHTML = "Ja, gerne!"
-            this.dialogModal.getChildByID('cancelButton').innerHTML = "Nein, zurück"
-            this.aGrid.placeAtIndex(383, this.dialogModal)
-            this.count = 2
-        } else if(this.count == 2) {
-            console.log('count 2')
-            this.scene.start("SelectionScene", { count: 0 });
+        switch(this.count) {
+            case 0:
+                var newMessage = "Schade, wollen Sie sich die Lösungen anderer Teilnehmer*innen ansehen?"
+                this.dialogModal.getChildByID('messageTitle').textContent = ""
+                this.dialogModal.getChildByID('messageContent').textContent = newMessage
+                this.dialogModal.getChildByID('confirmationButton').innerHTML = "Ja, gerne!"
+                this.dialogModal.getChildByID('cancelButton').innerHTML = "Nein, zurück"
+                this.aGrid.placeAtIndex(384, this.dialogModal)
+
+                this.collisionLeft.setScale(0.3)
+                this.collisionRight.setScale(0.4)
+                this.aGrid.placeAtIndex(450, this.collisionRight)
+
+                this.count = 2
+                break
+            case 2:
+                this.scene.start("SelectionScene", { count: 0 });
+                break
+            case 4:
+                this.newSolution()
+                break
+            default:
+                console.log("something unexpected happend")
+        }
+    }
+    
+
+    newSolution() {
+        var inputSolution = this.inputForm.getChildByName('solutionInput')                
+        if (inputSolution.value !== "") {
+            // save solution
+            this.saveSolutionInLocalArray(this.activeTabKey, inputSolution.value)
+            // reset input
+            inputSolution.value = ""
+
+            
+            // create new tab
+            // update activ tab key
+            this.activeTabKey = this.solutions.length
+            var newInnerTab = document.createElement('a')
+            newInnerTab.innerText = "Lösungsvorschlag " + (this.activeTabKey + 1)
+            newInnerTab.setAttribute("name", "tabButton")
+            newInnerTab.setAttribute("key", this.activeTabKey)
+            var newTab = document.createElement('li')
+
+            // switch to new tab
+            this.resetActiveClass()
+            newTab.appendChild(newInnerTab)
+            newTab.classList.add("is-active")
+            this.inputForm.getChildByID('tab-container').appendChild(newTab)
+
+            // disable more button
+            if(this.activeTabKey == 3) {
+                this.inputForm.getChildById('moreButton').disabled = true
+            }
+            
+            // remove error
+            this.error.style.display = 'none'
+        } else {
+            // show error
+            this.error.style.display = 'block'
+        }
+    }
+
+    solutionsDone() {
+        const inputSolution = this.inputForm.getChildByName('solutionInput')
+        if (inputSolution.value !== '') {
+            // remove error
+            this.error.style.display = 'none'
+
+            // save solution
+            var activeTabKeyValue = document.getElementsByClassName('is-active').item(0).firstChild.attributes.key.value
+            this.saveSolutionInLocalArray(activeTabKeyValue, inputSolution.value)
+            console.log(this.solutions)
+            
+            this.inputForm.removeListener('click')
+            this.inputForm.setVisible(false)
+            
+            this.timedEvent.paused = true
+
+            // save in database
+            Database.saveNewSolutions(this.solutions).then(
+                () => {
+                    console.log(this.solutions + " erfolgreich gespeichert.")
+                    // switch to solution scene
+                    this.scene.start("SolutionsScene", { challengeID: this.currentChallenge.id })
+                }
+            )
+
+            
+        } else {
+            // show error
+            this.error.style.display = 'block'
         }
     }
 

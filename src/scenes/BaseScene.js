@@ -15,13 +15,15 @@ export class BaseScene extends Phaser.Scene {
         this.makeAlignGrid(25, 31)
         // this.aGrid.showNumbers() // for debug
 
+        var dekoGround = this.placeImage('ground_grass', 728, 1.05, true)
+        dekoGround.body.allowGravity = false
+        dekoGround.setImmovable(true)
         // player
         this.player = this.physics.add.sprite(0, 0, 'player')
             .setBounce(0.2, 0.2)
             .setCollideWorldBounds(true)
             .setScale(.6)
-
-        this.aGrid.placeAtIndex(622, this.player)
+        this.aGrid.placeAtIndex(529, this.player)
 
         this.ground = this.placeImage('ground_new', 759, 1, true)
         this.ground.body.allowGravity = false

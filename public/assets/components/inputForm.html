@@ -1,16 +1,21 @@
+<diV>
+    <div class="box" style="width: 891px;">
+        <div class="tabs">
+            <ul class=" has-text-info" id="tab-container">
+                <li class="is-active"><a name="tabButton" key="0">Lösungsvorschlag 1</a></li>
+            </ul>
+            <span class="removeButton icon">
+                <i class="removeButton fa-solid fa-xmark has-text-primary" id="icon" style="font-size: 2.5rem"></i>
+            </span>
+        </div>
+        <div class="field">
+            <textarea class="textarea" placeholder="Lösung beschreiben" name="solutionInput"></textarea>
+            <p class="help is-danger" id="solutionError" style="display: none;">Jede Lösung braucht eine Beschreibung.</p>
+        </div>
+    </div>
 
-<div class="box" style="width: 891px;">
-    <div class="tabs">
-        <ul id="tab-container">
-            <li class="is-active"><a name="tabButton" key="0">Lösungsvorschlag 1</a></li>
-        </ul>
-    </div>
-    <div class="field">
-          <textarea class="textarea" placeholder="Lösung beschreiben" name="solutionInput"></textarea>
-         <p class="help is-danger" id="solutionError" style="display: none;">Jede Lösung braucht eine Beschreibung.</p>
-    </div>
-    <div class="buttons">
-        <button class="button is-secundary" name="moreButton" id="moreButton">Neue Lösung</button>
+    <div class="buttons" style="justify-content: center; padding-top: 3%;">
+        <button class="button is-link" name="moreButton" id="moreButton" style="margin-right: 10%;">Neue Lösung</button>
         <button class="button is-primary" name="doneButton">Fertig</button>
     </div>
-</div>
+</diV>

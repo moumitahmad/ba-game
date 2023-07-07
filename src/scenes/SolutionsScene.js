@@ -17,9 +17,9 @@ class SolutionsScene extends BaseScene {
     create(data) {
         super.create()
         this.setupCommonUI()
-        this.activeButtonID = -1
+        this.activeSolutionID = -1
         this.physics.add.collider(this.player, this.ground, () => {
-            this.activeButtonID = -1
+            this.activeSolutionID = -1
         })
 
         // db
@@ -54,10 +54,10 @@ class SolutionsScene extends BaseScene {
             title = this.placeText(noSolutionsText, 125)
             title.setScale(.8)
             return
-        } else {
-            title = this.placeText(welcomeText, 125)
-            title.setScale(.8)
         }
+        
+        title = this.placeText(welcomeText, 125)
+        title.setScale(.8)
 
         this.positions = [442, 449, 456]
         this.cards = [
@@ -68,20 +68,86 @@ class SolutionsScene extends BaseScene {
         for(var i=0; i<this.cards.length; i++){
             this.aGrid.placeAtIndex(this.positions[i], this.cards[i])
         }
-        var collisionObject
-        var collisions = []
-        for(var pos in this.positions) {
-            collisionObject = this.placeImage('collisionItem', this.positions[pos], .13, true)
-            collisionObject.body.allowGravity = false
-            collisionObject.setData({ solution: {}, pos: this.positions[pos] })
-            this.physics.add.overlap(collisionObject, this.player, (button) => {
+
+        this.userLiked = []
+        
+        // PlayerClick
+        this.buttonsCollidable = true
+        this.commentCollisionObjects = []
+        this.likeCollisionObjects = []
+        for(var i=0; i<this.cards.length; i++) {
+            this.setupCollisions(this.positions[i])
+        }
+
+        this.solutionStart = 0
+        this.setupSolutionCards(solutions.slice(this.solutionStart, 3), this.cards)
+        
+        if(solutions.length > 3) {
+            // add gallery buttons
+            var previewPos = 436
+            this.previewButton = this.add.dom(0, 0).createFromCache('iconButton')
+            this.previewButton.getChildByID('icon').classList.add("fa-caret-left")
+            this.aGrid.placeAtIndex(previewPos, this.previewButton)
+            this.previewButton.setVisible(false)
+            
+            var nextPos = 462
+            this.nextButton = this.add.dom(0, 0).createFromCache('iconButton')
+            this.nextButton.getChildByID('icon').classList.add("fa-caret-right")
+            this.aGrid.placeAtIndex(nextPos, this.nextButton)
+
+            // player click
+            var previewCollider = this.placeImage('collisionItem', previewPos, .05, true)
+
+            var nextCollider = this.placeImage('collisionItem', nextPos, .05, true)
+            nextCollider.body.allowGravity = false
+            this.physics.add.overlap(nextCollider, this.player, (button) => {
+                if(this.buttonsCollidable) {
+                    this.solutionStart += 3
+                    // display new three solutions
+                    this.setupSolutionCards(solutions.slice(this.solutionStart, this.solutionStart+3), this.cards)
+                    this.previewButton.setVisible(true)
+                    if(this.solutionStart+3 >= solutions.length) {
+                        this.nextButton.setVisible(false)
+                        nextCollider.setVisible(false)
+                    }
+                    this.resetAllCommentSections()
+                    this.buttonsCollidable = false
+                }
+            })
+
+            previewCollider.body.allowGravity = false
+            previewCollider.setVisible(false)
+            this.physics.add.overlap(previewCollider, this.player, (button) => {
+                if(this.buttonsCollidable) {
+                    this.solutionStart -= 3
+                    // display last three solutions
+                    this.setupSolutionCards(solutions.slice(this.solutionStart, this.solutionStart+3), this.cards)
+                    this.nextButton.setVisible(true)
+                    if(this.solutionStart == 0) {
+                        this.previewButton.setVisible(false)
+                        previewCollider.setVisible(false)
+                    }
+                    this.resetAllCommentSections()
+                    this.buttonsCollidable = false
+                }
+            })
+        }
+        
+    }
+
+    setupCollisions(cardPos) {
+        var collisionComment = this.placeImage('collisionItem', cardPos+31*2-2, .05, true)
+        collisionComment.body.allowGravity = false
+        this.physics.add.overlap(collisionComment, this.player, (button) => {
+            if(this.buttonsCollidable) {
                 var solution = button.getData('solution')
-                if(this.activeButtonID !== solution.id && solution.id !== undefined) {
+                console.log("COMMENT: " + solution.description)
+                if(this.activeSolutionID !== solution.id && solution.id !== undefined) {
                     this.resetAllCommentSections()
                     Database.getCommentsBySolutionID(solution.id).then(
                         (comments) => {
                             var commentSection = this.add.dom(0, 0).createFromCache('commentSection')
-                            commentSection.getChildByID('completeSolution').innerHTML = solution.description
+                             commentSection.getChildByID('completeSolution').innerHTML = solution.description
                             //Align.center(commentSection, this)
                             //this.aGrid.placeAtIndex(button.getData('pos')-31*11, commentSection)
                             this.commentLenght = 1
@@ -99,10 +165,9 @@ class SolutionsScene extends BaseScene {
                                             solutionID: solution.id
                                         }
                                         // save comment
-                                        Database.saveNewComment(comment). then(
+                                        Database.saveNewComment(comment, comments.length). then(
                                             (savedComment) => {
                                                 // display comment
-                                                // TODO: add from top
                                                 this.displayComment(savedComment, comments.length+1, commentSection)
                                             }
                                         )
@@ -114,116 +179,99 @@ class SolutionsScene extends BaseScene {
                                     }
                                 } else if(event.target.classList.item(0) === 'modal-background') {
                                     commentSection.setVisible(false)
+                                    // TODO: update commentAmount
+                                    this.buttonsCollidable = true
                                 }
                             })
                         }
                     )
-                    this.activeButtonID = solution.id
+                    this.activeSolutionID = solution.id
                 }
-                
-            })
-            collisions.push(collisionObject)
-        }
+                this.buttonsCollidable = false
+            }
+        })
+        this.commentCollisionObjects.push(collisionComment)
 
-        this.solutionStart = 0
-        this.setupSolutionCards(solutions.slice(this.solutionStart, 3), this.cards, collisions)
         
-        if(solutions.length > 3) {
-            // add gallery buttons
-            this.previewButton = this.add.dom(0, 0).createFromCache('iconButton')
-            this.previewButton.getChildByID('icon').classList.add("fa-caret-left")
-            this.aGrid.placeAtIndex(436, this.previewButton)
-            this.previewButton.setVisible(false)
-            
-            this.nextButton = this.add.dom(0, 0).createFromCache('iconButton')
-            this.nextButton.getChildByID('icon').classList.add("fa-caret-right")
-            this.aGrid.placeAtIndex(462, this.nextButton)
-
-            // button events
-            this.nextButton.addListener('click')
-            this.nextButton.on('click', (event) => {
-                if(event.target.classList.item(0) === "iconButton") {
-                    this.solutionStart += 3
-                    // display new three solutions
-                    this.setupSolutionCards(solutions.slice(this.solutionStart, this.solutionStart+3), this.cards, collisions)
-                    this.previewButton.setVisible(true)
-                    if(this.solutionStart+3 >= solutions.length) {
-                        this.nextButton.setVisible(false)
-                    }
-                    this.resetAllCommentSections()
+        var collisionLike = this.placeImage('collisionItem', cardPos+31*2+2, .05, true)
+        collisionLike.body.allowGravity = false
+        this.physics.add.overlap(collisionLike, this.player, (button) => {
+            if(this.buttonsCollidable) {
+                var solution = button.getData('solution')
+                console.log("LIKE: " + solution.description)
+                this.buttonsCollidable = false
+                if(!button.getData('liked')) {
+                    Database.likeSolution(solution).then(
+                        (s) => {
+                            var displayButton = this.cards[button.getData('index')]
+                            var icon = displayButton.getChildByID('likeIcon')
+                            icon.classList.remove("fa-regular")
+                            icon.classList.add("fa-solid")
+                            displayButton.getChildByID('likeAmount').innerText = s.likes
+                            button.setData({ 'liked': true })
+                            this.userLiked.push(solution.id)
+                        }
+                    )
+                } else {
+                    Database.unlikeSolution(solution).then(
+                        (s) => {
+                            var displayButton = this.cards[button.getData('index')]
+                            var icon = displayButton.getChildByID('likeIcon')
+                            icon.classList.add("fa-regular")
+                            icon.classList.remove("fa-solid")
+                            displayButton.getChildByID('likeAmount').innerText = s.likes
+                            button.setData({ 'liked': false })
+                            var index = this.userLiked.indexOf(solution.id)
+                            if (index > -1) { 
+                                this.userLiked.splice(index, 1);
+                            }
+                        }
+                    )
                 }
-            })
-
-            this.previewButton.addListener('click')
-            this.previewButton.on('click', (event) => {
-                if(event.target.classList.item(0) === "iconButton") {
-                    this.solutionStart -= 3
-                    // display last three solutions
-                    this.setupSolutionCards(solutions.slice(this.solutionStart, this.solutionStart+3), this.cards, collisions)
-                    this.nextButton.setVisible(true)
-                    if(this.solutionStart == 0) {
-                        this.previewButton.setVisible(false)
-                    }
-                    this.resetAllCommentSections()
-                }
-            })
-        }
-        
-        
+            }
+        })
+        this.likeCollisionObjects.push(collisionLike)
     }
 
-    setupSolutionCards(displayedSolutions, cards, collisionObjects) {
+    setupSolutionCards(displayedSolutions, cards) {
         
         // TODO: reset display
         cards.forEach((card) => {
             card.setVisible(false)
         })
-        for(var co in collisionObjects) {
-            //collisionObjects.at(co).setVisible(false)
-            collisionObjects.at(co).setData({ solution: {} })
-            this.aGrid.placeAtIndex(collisionObjects.at(co).getData('pos'), collisionObjects.at(co))
-        }
-        this.activeButtonID = -1
+        this.commentCollisionObjects.forEach((collision) => {
+            collision.setVisible(false)
+        })
+        this.likeCollisionObjects.forEach((collision) => {
+            collision.setVisible(false)
+        })
+    
+        this.activeSolutionID = -1
 
         let i = 0
         displayedSolutions.forEach((solution) => {
             // update card
             cards[i].getChildByID('solutionDescription').innerText = solution.description
             cards[i].getChildByID('likeAmount').innerText = solution.likes
-            solution.liked = false
+            cards[i].getChildByID('commentAmount').innerText = solution.commentAmount
+
+            if(this.userLiked.indexOf(solution.id) > -1) { // solution was liked
+                var icon = cards[i].getChildByID('likeIcon')
+                icon.classList.remove("fa-regular")
+                icon.classList.add("fa-solid")
+            } else {
+                var icon = cards[i].getChildByID('likeIcon')
+                icon.classList.add("fa-regular")
+                icon.classList.remove("fa-solid")
+            }
 
             cards[i].setVisible(true)
 
-            // setup hover event -> collision
-            collisionObjects.at(i).setData({ solution: solution })
-
-            // setup like button
-            cards[i].addListener('click')
-            cards[i].on('click', (event) => {
-                if(event.target.classList.item(0) === "likeButton") {
-                    if(!solution.liked) {
-                        Database.likeSolution(solution).then(
-                            (s) => {
-                                console.log(event.target.parentElement.parentElement.parentElement)
-                                event.target.parentElement.parentElement.parentElement.children.item(1).innerText = s.likes
-                                event.target.classList.remove("fa-regular")
-                                event.target.classList.add("fa-solid")
-                                solution.liked = true
-                            }
-                        )
-                    } else {
-                        Database.unlikeSolution(solution).then(
-                            (s) => {
-                                console.log(event.target.parentElement.parentElement.parentElement)
-                                event.target.parentElement.parentElement.parentElement.children.item(1).innerText = s.likes
-                                event.target.classList.add("fa-regular")
-                                event.target.classList.remove("fa-solid")
-                                solution.liked = false
-                            }
-                        )
-                    }
-                }
-            })
+            // setup collision event
+            this.commentCollisionObjects.at(i).setVisible(true)
+            this.likeCollisionObjects.at(i).setVisible(true)
+            this.commentCollisionObjects.at(i).setData({ solution: solution, index: i })
+            this.likeCollisionObjects.at(i).setData({ solution: solution, liked: false, index: i })
 
             // update index
             i++
@@ -261,6 +309,9 @@ class SolutionsScene extends BaseScene {
 
     update() {
         this.checkPlayer()
+        if(this.player.y > 670) {
+            this.buttonsCollidable = true
+        }
     }
 }
 

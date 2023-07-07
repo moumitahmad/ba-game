@@ -49,7 +49,7 @@ export default class SceneLoad extends BaseScene {
         //
         //game png
         //
-        let pngArray = ['base-tiles', 'ground_new', 'button', 'cloud', 'collisionItem', 'diaper', 'wheelchair', 'vacation', 'applications'];
+        let pngArray = ['base-tiles', 'ground_new', 'button', 'cloud', 'collisionItem', 'diaper', 'wheelchair', 'vacation', 'applications', 'ground_grass'];
         for (let i = 0; i < pngArray.length; i++) {
             this.loadPng(pngArray[i], this.imagePath);
         }
@@ -106,7 +106,7 @@ export default class SceneLoad extends BaseScene {
         //this.scene.start("ChallengeScene", { challenge: challengeData["challenge1"] });
         this.scene.start("SelectionScene");
         
-        //this.scene.start("SolutionsScene", { challengeID:  0});
+        // this.scene.start("SolutionsScene", { challengeID:  0});
     }
 
     setupPlayerAnimation() {

@@ -27,23 +27,42 @@ class SelectionScene extends BaseScene {
         } else {
             this.restartNum = data.count
         }
-        this.challengeText = "Wähle eine Herauforderung:"
+        this.challengeText = "Wähle eine Herausforderung:"
         this.categoryText = "Wähle eine Kategorie:"
 
-        this.cloud = this.placeImage('cloud', 150, 0.2, true)
-        this.cloud.body.allowGravity = false
-        this.cloud.setImmovable(true)
+        this.cloudOne = this.placeImage('cloud', 150, 0.2, true)
+        this.cloudOne.body.allowGravity = false
+        this.cloudOne.setImmovable(true)
+        this.cloudOne.setVelocityX(-5)
+        this.cloudTwo = this.placeImage('cloud', 319, 0.2, true)
+        this.cloudTwo.body.allowGravity = false
+        this.cloudTwo.setImmovable(true)
+        this.cloudTwo.setVelocityX(-8)
 
         if(this.restartNum == 0) {
-            this.placeText(this.categoryText, 226)
+            var title = this.placeText(this.categoryText, 226)
             var categoryButton = this.placeImage('button', 449, .08, true)
             categoryButton.body.allowGravity = false
             this.physics.add.overlap(this.player, categoryButton, () => {
-                this.scene.restart({ count: 1 })
-                
+                categoryButton.setVisible(false)
+                title.setVisible(false)
+                this.setupChallageSelection()
             })
         } else {
-            this.placeText(this.challengeText, 224)
+            this.setupChallageSelection()
+        }
+
+
+        // keyboard setup
+        this.cursors = this.input.keyboard.createCursorKeys();
+        this.input.keyboard.removeCapture('SPACE');
+        this.walkStarted = false
+        this.jumpStarted = false
+        this.isLeft = false
+    }
+
+    setupChallageSelection() {
+        this.placeText(this.challengeText, 224)
             // display selection choices
             var challengeData = this.cache.json.get('challengeData')
             var button
@@ -56,19 +75,16 @@ class SelectionScene extends BaseScene {
                     this.scene.start('ChallengeScene', { challenge: button.getData('challenge') })
                 })
             }
-        }
-
-
-        // keyboard setup
-        this.cursors = this.input.keyboard.createCursorKeys();
-        this.input.keyboard.removeCapture('SPACE');
-        this.walkStarted = false
-        this.jumpStarted = false
-        this.isLeft = false
     }
 
     update() {
-        this.checkPlayer()    
+        this.checkPlayer()
+        if(this.cloudTwo.x < -90) {
+            this.cloudTwo.x = 1100
+        }
+        if(this.cloudOne.x < -90) {
+            this.cloudOne.x = 1100
+        }
     }
 }
 
