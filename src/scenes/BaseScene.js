@@ -11,9 +11,23 @@ export class BaseScene extends Phaser.Scene {
     create() {        
     }
     setupCommonUI() {
+        console.log("PUNKTE: " + this.game.config.userPoints)
         // grid
         this.makeAlignGrid(25, 31)
         // this.aGrid.showNumbers() // for debug
+
+        // tree
+        this.tree = this.physics.add.sprite(0, 0, 'growing_tree')
+            .setScale(.7)
+            .play('grow')
+        this.aGrid.placeAtIndex(522, this.tree)
+        this.tree.body.allowGravity = false
+        this.tree.setImmovable(true)
+        var frame = 17
+        if(this.game.config.userPoints+1<17) {
+            frame = this.game.config.userPoints+1
+        }
+        this.tree.setFrame(frame)
 
         var dekoGround = this.placeImage('ground_grass', 728, 1.05, true)
         dekoGround.body.allowGravity = false

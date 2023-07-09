@@ -41,6 +41,8 @@ const config = {
         disableWebAudio: true
     },
     scene: [SceneLoad, SelectionScene, ChallengeScene, SolutionsScene],
+    userPoints: 0
 };
 
 window.game = new Phaser.Game(config);
+window.game.config.userPoints = 0

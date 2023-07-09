@@ -224,6 +224,15 @@ class ChallengeScene extends BaseScene {
         if (inputSolution.value !== "") {
             // save solution
             this.saveSolutionInLocalArray(this.activeTabKey, inputSolution.value)
+            this.game.config.userPoints += 1
+            console.log("tree grows!")
+            // update tree
+            var frame = 17
+            if(this.game.config.userPoints+1<17) {
+                frame = this.game.config.userPoints+1
+            }
+            this.tree.setFrame(frame)
+            
             // reset input
             inputSolution.value = ""
 
@@ -265,6 +274,15 @@ class ChallengeScene extends BaseScene {
             // save solution
             var activeTabKeyValue = document.getElementsByClassName('is-active').item(0).firstChild.attributes.key.value
             this.saveSolutionInLocalArray(activeTabKeyValue, inputSolution.value)
+            this.game.config.userPoints += 1
+            console.log("tree grows!")
+            // update tree
+            var frame = 17
+            if(this.game.config.userPoints+1<17) {
+                frame = this.game.config.userPoints+1
+            }
+            this.tree.setFrame(frame)
+
             console.log(this.solutions)
             
             this.inputForm.removeListener('click')

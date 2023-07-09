@@ -169,6 +169,14 @@ class SolutionsScene extends BaseScene {
                                             (savedComment) => {
                                                 // display comment
                                                 this.displayComment(savedComment, comments.length+1, commentSection)
+                                                this.game.config.userPoints += 1
+                                                console.log("tree grows!")
+                                                // update tree
+                                                var frame = 17
+                                                if(this.game.config.userPoints+1<17) {
+                                                    frame = this.game.config.userPoints+1
+                                                }
+                                                this.tree.setFrame(frame)
                                             }
                                         )
                                         // update display

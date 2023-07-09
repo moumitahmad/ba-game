@@ -65,7 +65,22 @@ export default class SceneLoad extends BaseScene {
         //
         // game sprite
         //
-        this.setupSprite()
+        let spriteArray = [
+            {
+                name: 'player',
+                width: 103,
+                height: 150
+            },
+            {
+                name: 'growing_tree',
+                width: 500,
+                height: 720
+            }
+        ]
+        for(let i=0; i<spriteArray.length; i++) {
+            this.setupSprite(spriteArray[i].name, spriteArray[i].width, spriteArray[i].height)
+        }
+        
 
         //
         //game json
@@ -88,10 +103,10 @@ export default class SceneLoad extends BaseScene {
         
     }
 
-    setupSprite() {
-        this.load.spritesheet('player', "./assets/images/player.png", {
-            frameWidth: 103, 
-            frameHeight: 150
+    setupSprite(name, width, height) {
+        this.load.spritesheet(name, "./assets/images/" + name + ".png", {
+            frameWidth: width, 
+            frameHeight: height
         })
     }
 
@@ -102,6 +117,7 @@ export default class SceneLoad extends BaseScene {
 
     create() {
         this.setupPlayerAnimation()
+        this.setupTreeAnimation()
         //var challengeData = this.cache.json.get('challengeData')
         //this.scene.start("ChallengeScene", { challenge: challengeData["challenge1"] });
         this.scene.start("SelectionScene");
@@ -179,6 +195,19 @@ export default class SceneLoad extends BaseScene {
             key: 'jump-left',
             frames: this.anims.generateFrameNumbers('player', { start: 3, end: 3 }),
             frameRate: 10,
+            repeat: 0
+        });
+    }
+
+    updateTreeAnimation() {
+        // TODO: grow tree
+    }
+
+    setupTreeAnimation() {
+        this.anims.create({
+            key: 'grow',
+            frames: this.anims.generateFrameNumbers('growing_tree', { start: 17, end: 17 }),
+            frameRate: .5,
             repeat: 0
         });
     }
