@@ -18,7 +18,7 @@
     "challenge3" : {
         "id": 2, 
         "title": "Fixierung im Schlaf",
-        "description": "Meine Tochter sehr dünn, groß und schon fast zirkusreif beweglich. Das hat zu Folge, dass sie nachts zum Schlafen Halt braucht. hat das mit Zewi-Leintücher (grösste Kleinkindgrösse oder kleinste Grösse von Cerebral-Stiftung) ganz gut geklappt. Nun beginnt sie aber immer mehr, da rauszuschlüpfen und das wird mitlerweile gefährlich. Habt ihr Erfahrung mit anderen Fixierungsmöglichkeiten?",
+        "description": "Meine Tochter ist sehr dünn, groß und schon fast zirkusreif beweglich. Das hat zu Folge, dass sie nachts zum Schlafen viel Halt braucht. Bisher haben wir das mit Zewi-Leintücher (grösste Kleinkindgrösse oder kleinste Grösse von Cerebral-Stiftung) ganz gut hinbekommen. Nun beginnt sie aber immer mehr, da rauszuschlüpfen und das wird mitlerweile gefährlich. Habt ihr Erfahrungen mit anderen Fixierungsmöglichkeiten?",
         "categoryID": 0,
         "pos": 453,
         "image": "bett"
@@ -26,7 +26,7 @@
     "challenge4" : {
         "id": 3,
         "title": "Packliste im Urlaub",
-        "description": "Welche Dinge habt ihr bei euerm ersten Urlaub vergessen und dürfen jetzt nicht mehr fehlen?",
+        "description": "Habt ihr Tipps für den Urlaub mit meinem Kind? Welche Dinge habt ihr zum Beispiel bei euerm ersten Urlaub vergessen, die jetzt nicht mehr fehlen dürfen?",
        "categoryID": 0,
         "pos": 460,
         "image": "vacation"
