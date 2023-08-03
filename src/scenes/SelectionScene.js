@@ -13,6 +13,8 @@ class SelectionScene extends BaseScene {
     preload() {
         this.load.json('categoryData', "./assets/data/categories.json")
         this.load.json('challengeData', "./assets/data/challenges.json")
+        this.load.html('challengeDisplay', './assets/components/challengeDisplay.html')
+
     }
 
     create(data) {
@@ -20,7 +22,7 @@ class SelectionScene extends BaseScene {
         this.setupCommonUI()
         this.physics.add.collider(this.player, this.ground)
 
-        this.restartNum = 0
+        this.restartNum = 1
         console.log(data)
         if(!data.count) {
             this.player.play('blink')
@@ -65,15 +67,25 @@ class SelectionScene extends BaseScene {
         this.placeText(this.challengeText, 224)
             // display selection choices
             var challengeData = this.cache.json.get('challengeData')
+            var challengeDisplay
             var button
+            var count = 0
             for(var choice in challengeData) {
-                // this.placeText(challengeData[choice].title, challengeData[choice].pos-31*2)
-                button = this.placeImage(challengeData[choice].image, challengeData[choice].pos, .08, true)
-                button.body.allowGravity = false
-                button.setData({ challenge: challengeData[choice] })
-                this.physics.add.collider(button, this.player, (button) => {
-                    this.scene.start('ChallengeScene', { challenge: button.getData('challenge') })
-                })
+                if(count < 4) {
+                    challengeDisplay = this.add.dom(0, 0).createFromCache('challengeDisplay')
+                    challengeDisplay.getChildByID('title').innerHTML = challengeData[choice].title
+                    challengeDisplay.getChildByID('image').src = '/ba-game/assets/images/' + challengeData[choice].image+'.png'
+                    this.placeAtIndex(challengeData[choice].pos, challengeDisplay)
+
+                    button = this.placeImage('collisionItem', challengeData[choice].pos, .08, true)
+                    button.body.allowGravity = false
+                    button.setData({ challenge: challengeData[choice] })
+                    this.physics.add.collider(button, this.player, (button) => {
+                        this.scene.start('ChallengeScene', { challenge: button.getData('challenge') })
+                    })
+
+                    count++
+                }
             }
     }
 

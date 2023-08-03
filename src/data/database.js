@@ -73,7 +73,7 @@ export class Database {
         return comments
     }
 
-    static async saveNewComment(comment, currentAmount) {
+    static async saveNewComment(comment, amount) {
         const { data, error } = await supabase
             .from('comments')
             .insert(comment)
@@ -82,11 +82,14 @@ export class Database {
         if(error) {
             throw new Error(error)
         }
-        
+
+        console.log(comment)
+
         const {data1, error1 } = await supabase
-            .from('solution')
-            .update('commentAmount', currentAmount+1)
+            .from('solutions')
+            .update({ commentAmount: ++amount })
             .eq('id', comment.solutionID)
+            .select()
 
         if(error1) {
             throw new Error(error1)

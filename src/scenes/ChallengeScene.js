@@ -39,7 +39,7 @@ class ChallengeScene extends BaseScene {
         this.timerText = this.placeText("0:00", 60)
         this.timerText.setScale(2)
         this.timedEvent = this.time.addEvent({
-            delay: 180000, //  30000, // TODO: Change time
+            delay: 180000, // 300000, //  30000, 
             callback: this.timerOut, 
             callbackScope: this
         }) 
@@ -143,7 +143,7 @@ class ChallengeScene extends BaseScene {
     confirmationButtonClicked() {
         switch(this.count) {
             case 0:
-                var newMessage = "Häufig kann man unter Zeitdruck besser Lösungen finden. \n Sie haben nun drei Minuten, um möglichst viele Lösungen zu finden. Die Qualität der Lösungen ist dabei zweitrangig. \n Später können Sie gerne noch Fotos oder Skizzen einfügen. \n Fröhliches Sammeln!"
+                var newMessage = "Häufig kann man unter Zeitdruck besser Lösungen finden. \nSie haben nun drei Minuten, um bis zu vier Lösungen zu finden. Die Qualität der Lösungen ist dabei nicht so wichtig. Die Lösungen sind nur für diesen Workshop gedacht. \nFröhliches Sammeln!"
                 this.dialogModal.getChildByID('messageTitle').textContent = "Was passiert nun?"
                 this.dialogModal.getChildByID('messageTitle').style.display = 'block'
                 this.dialogModal.getChildByID('messageContent').textContent = newMessage
@@ -166,11 +166,55 @@ class ChallengeScene extends BaseScene {
                 this.dialogModal.removeAllListeners()
                 this.leftButtonActive = true
                 this.rightButtonActive = true
-                this.aGrid.placeAtIndex(545, this.collisionLeft)
+                this.aGrid.placeAtIndex(549, this.collisionLeft)
                 this.collisionLeft.setScale(0.3)
                 this.collisionRight.setVisible(true)
-                this.aGrid.placeAtIndex(540, this.collisionRight)
+                this.aGrid.placeAtIndex(544, this.collisionRight)
                 this.collisionRight.setScale(0.5)
+                this.deleteCollision = this.placeImage('collisionItem', 536, .19, true)
+                this.deleteCollision.body.allowGravity = false
+                this.deleteButtonActive = false
+                this.inputForm.getChildByID('deleteButton').disabled = true
+                this.physics.add.overlap(this.deleteCollision, this.player, () => {
+                    if(this.buttonsCollidable && this.deleteButtonActive) {
+                        this.buttonsCollidable = false
+                        // delete active solution
+                        console.log("delete: " + this.activeTabKey)
+                        console.log(this.solutions)
+                        console.log(this.activeTabKey)
+
+
+                        if(this.inputForm.getChildByID('tab-container').lastChild.classList.contains("is-active")) {
+                            console.log(this.inputForm.getChildByID('tab-container').children)
+                            //var removedTab = this.inputForm.getChildByID('tab-container').children.item
+                            this.inputForm.getChildByID('tab-container').lastChild.remove()
+                            console.log(this.inputForm.getChildByID('tab-container'))
+                            this.activeTabKey = this.activeTabKey-1
+                            if(this.activeTabKey == 0) {
+                                this.inputForm.getChildByID('tab-container').lastChild.remove()
+                                this.inputForm.getChildByID('tab-container').lastChild.classList.add("is-active")
+                            } else {
+                                this.inputForm.getChildByID('tab-container').lastChild.classList.add("is-active")
+                            }
+                        }
+
+                        if(this.solutions[this.activeTabKey+1] !== undefined) {
+                            this.solutions.pop()
+                        }
+
+                        // display last input
+                        console.log(this.activeTabKey)
+                        this.inputForm.getChildByName('solutionInput').value = this.solutions.at(this.activeTabKey).description
+                        // remove error
+                        this.error.style.display = 'none'
+
+                        if(this.solutions.length == 1) {
+                            this.deleteButtonActive = false
+                            this.inputForm.getChildByID('deleteButton').disabled = true
+                        }
+                        
+                    }    
+                })
                 this.count = 4
                 break
             case 2:
@@ -212,6 +256,7 @@ class ChallengeScene extends BaseScene {
                 break
             case 4:
                 this.newSolution()
+                console.log(this.solutions)
                 break
             default:
                 console.log("something unexpected happend")
@@ -230,6 +275,8 @@ class ChallengeScene extends BaseScene {
             var frame = 17
             if(this.game.config.userPoints+1<17) {
                 frame = this.game.config.userPoints+1
+            } else if(this.game.config.userPoints == 17) {
+                this.scene.start("WinningScene");
             }
             this.tree.setFrame(frame)
             
@@ -254,8 +301,11 @@ class ChallengeScene extends BaseScene {
 
             // disable more button
             if(this.activeTabKey == 3) {
-                this.inputForm.getChildById('moreButton').disabled = true
+                this.inputForm.getChildByID('moreButton').disabled = true
             }
+            
+            this.deleteButtonActive = true
+            this.inputForm.getChildByID('deleteButton').disabled = false
             
             // remove error
             this.error.style.display = 'none'
@@ -280,6 +330,8 @@ class ChallengeScene extends BaseScene {
             var frame = 17
             if(this.game.config.userPoints+1<17) {
                 frame = this.game.config.userPoints+1
+            } else if(this.game.config.userPoints == 17) {
+                this.scene.start("WinningScene");
             }
             this.tree.setFrame(frame)
 
@@ -313,6 +365,7 @@ class ChallengeScene extends BaseScene {
                 description: newSolution,
                 challengeID: this.currentChallenge.id 
             })
+            console.log(this.solutions)
         } else {
             this.solutions[id] = {
                 description: newSolution,
@@ -321,6 +374,7 @@ class ChallengeScene extends BaseScene {
             action = " aktualisiert."
         }
         console.log("Lösungsvorschlag " + action)
+        console.log(this.solutions)
     }
 
     resetActiveClass() {
@@ -346,7 +400,7 @@ class ChallengeScene extends BaseScene {
         // finish last solution
         // display message
         var title = "Die Zeit ist abgelaufen!"
-        var content = "Nun haben Sie nur noch etwas Zeit, um ihre letzte Lösung auszuformulieren."
+        var content = "Nun haben Sie nur noch etwas Zeit, um ihre letzte Lösung fertig zu schreiben."
         this.dialogModal.setVisible(true)
         this.inputForm.setVisible(false)
         this.dialogModal.getChildByID('messageTitle').innerHTML = title

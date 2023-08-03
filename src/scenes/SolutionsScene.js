@@ -17,6 +17,7 @@ class SolutionsScene extends BaseScene {
     create(data) {
         super.create()
         this.setupCommonUI()
+        
         this.activeSolutionID = -1
         this.physics.add.collider(this.player, this.ground, () => {
             this.activeSolutionID = -1
@@ -175,6 +176,8 @@ class SolutionsScene extends BaseScene {
                                                 var frame = 17
                                                 if(this.game.config.userPoints+1<17) {
                                                     frame = this.game.config.userPoints+1
+                                                } else if(this.game.config.userPoints == 17) {
+                                                    this.scene.start("WinningScene");
                                                 }
                                                 this.tree.setFrame(frame)
                                             }

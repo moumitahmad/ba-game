@@ -5,6 +5,8 @@ import SelectionScene from './scenes/SelectionScene'
 import ChallengeScene from './scenes/ChallengeScene'
 import SolutionsScene from './scenes/SolutionsScene'
 import SceneLoad from './scenes/SceneLoad'
+import WinningScene from './scenes/WinningScene'
+import WelcomeScene from './scenes/WelcomeScene'
 
 const config = {
     type: Phaser.AUTO,
@@ -40,7 +42,7 @@ const config = {
     audio: {
         disableWebAudio: true
     },
-    scene: [SceneLoad, SelectionScene, ChallengeScene, SolutionsScene],
+    scene: [SceneLoad, WelcomeScene, SelectionScene, ChallengeScene, SolutionsScene, WinningScene],
     userPoints: 0
 };
 

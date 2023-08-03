@@ -16,6 +16,16 @@ export class BaseScene extends Phaser.Scene {
         this.makeAlignGrid(25, 31)
         // this.aGrid.showNumbers() // for debug
 
+        var dekoGround = this.placeImage('ground_grass', 728, 1.05, true)
+        dekoGround.body.allowGravity = false
+        dekoGround.setImmovable(true)
+        // player
+        this.player = this.physics.add.sprite(0, 0, 'player')
+            .setBounce(0.2, 0.2)
+            .setCollideWorldBounds(true)
+            .setScale(.6)
+        this.aGrid.placeAtIndex(529, this.player)
+
         // tree
         this.tree = this.physics.add.sprite(0, 0, 'growing_tree')
             .setScale(.7)
@@ -28,16 +38,6 @@ export class BaseScene extends Phaser.Scene {
             frame = this.game.config.userPoints+1
         }
         this.tree.setFrame(frame)
-
-        var dekoGround = this.placeImage('ground_grass', 728, 1.05, true)
-        dekoGround.body.allowGravity = false
-        dekoGround.setImmovable(true)
-        // player
-        this.player = this.physics.add.sprite(0, 0, 'player')
-            .setBounce(0.2, 0.2)
-            .setCollideWorldBounds(true)
-            .setScale(.6)
-        this.aGrid.placeAtIndex(529, this.player)
 
         this.ground = this.placeImage('ground_new', 759, 1, true)
         this.ground.body.allowGravity = false

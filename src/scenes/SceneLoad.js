@@ -14,6 +14,7 @@ export default class SceneLoad extends BaseScene {
         this.imagePath = "./assets/images/";
         this.mapPath = "./assets/map/";
         this.htmlPath = "./assets/components/";
+        this.videoPath = "./assets/video/";
         
         this.load.json('challengeData', "./assets/data/challenges.json")
         
@@ -49,7 +50,7 @@ export default class SceneLoad extends BaseScene {
         //
         //game png
         //
-        let pngArray = ['base-tiles', 'ground_new', 'button', 'cloud', 'collisionItem', 'diaper', 'wheelchair', 'vacation', 'applications', 'ground_grass'];
+        let pngArray = ['treeInstruction', 'base-tiles', 'ground_new', 'button', 'cloud', 'collisionItem', 'diaper', 'wheelchair', 'vacation', 'applications', 'ground_grass', 'bett'];
         for (let i = 0; i < pngArray.length; i++) {
             this.loadPng(pngArray[i], this.imagePath);
         }
@@ -94,6 +95,10 @@ export default class SceneLoad extends BaseScene {
         for(let i=0; i < htmlArray.length; i++) {
             this.loadHtml(htmlArray[i], this.htmlPath)
         }
+        let videoArray = ['intruction']
+        for(let i=0; i < videoArray.length; i++) {
+            this.loadVideo(videoArray[i], this.videoPath)
+        }
 
         // Database
         var database = new Database()
@@ -120,7 +125,8 @@ export default class SceneLoad extends BaseScene {
         this.setupTreeAnimation()
         //var challengeData = this.cache.json.get('challengeData')
         //this.scene.start("ChallengeScene", { challenge: challengeData["challenge1"] });
-        this.scene.start("SelectionScene");
+        this.scene.start("WelcomeScene");
+        // this.scene.start("SelectionScene");
         
         // this.scene.start("SolutionsScene", { challengeID:  0});
     }
@@ -199,14 +205,16 @@ export default class SceneLoad extends BaseScene {
         });
     }
 
-    updateTreeAnimation() {
-        // TODO: grow tree
-    }
-
     setupTreeAnimation() {
         this.anims.create({
             key: 'grow',
             frames: this.anims.generateFrameNumbers('growing_tree', { start: 17, end: 17 }),
+            frameRate: .5,
+            repeat: 0
+        });
+        this.anims.create({
+            key: 'celebrate',
+            frames: this.anims.generateFrameNumbers('growing_tree', { start: 0, end: 16 }),
             frameRate: .5,
             repeat: 0
         });
@@ -224,6 +232,12 @@ export default class SceneLoad extends BaseScene {
         }
         this.load.image(key, mainPath + key + ".png");
     }
+    loadGif(key, mainPath = "") {
+        if (mainPath == "") {
+            mainPath = this.imagePath;
+        }
+        this.load.image(key, mainPath + key + ".gif");
+    }
     loadJson(key, mainPath = "") {
         if(mainPath == "") {
             mainPath = this.imagePath
@@ -235,6 +249,12 @@ export default class SceneLoad extends BaseScene {
             mainPath = this.htmlPath;
         }
         this.load.html(key, mainPath + key + ".html")
+    }
+    loadVideo(key, mainPath = "") {
+        if (mainPath == "") {
+            mainPath = this.videoPath;
+        }
+        this.load.video(key, mainPath + key + ".mp4")
     }
     update() {}
 }
